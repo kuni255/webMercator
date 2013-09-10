@@ -5,7 +5,7 @@ import webMercator
 import shutil
 from PIL import Image
 
-class TsateliteImage:
+class TsatelliteImage:
 
   def __init__(self, lat0, lng0, lat1, lng1):
     self.setDataID('DJBMO')
@@ -228,7 +228,7 @@ class TsateliteImage:
 if (__name__ == '__main__'):
   import argparse
   import sys
-  import sateliteImage
+  import satelliteImage
 
   ##################################
   ## parse command line arguments ##
