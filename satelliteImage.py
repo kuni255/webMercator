@@ -36,6 +36,9 @@ class TsatelliteImage:
 
     self.setZoomID(16)
 
+  def __del__(self):
+    self.cleanupTmpImgFile();
+
   def setZoomID(self, zoomID): 
     self.zoomID = zoomID
 
@@ -64,13 +67,12 @@ class TsatelliteImage:
 
   def getimgFilePath(self, xTileNum, yTileNum):
     tmpDir = tempfile.gettempdir()
-    outImgFile = tmpDir + os.pathsep + str(self.pid) + "_" + str('%07d' % xTileNum) + str('%07d' % yTileNum) + self.imgFileExt
+    outImgFile = tmpDir + os.sep + str(self.pid) + "_" + str('%07d' % xTileNum) + str('%07d' % yTileNum) + self.imgFileExt
     # for debug
     #outImgFile = str('%07d' % xTileNum) + str('%07d' % yTileNum) + self.imgFileExt
     return outImgFile
   
   def getImages(self):
-    eachDirectNum = 2**self.zoomID
   
     for xTileNum in range(self.xTileNum0, self.xTileNum1 + 1):
       for yTileNum in range(self.yTileNum0, self.yTileNum1 + 1):
@@ -224,6 +226,14 @@ class TsatelliteImage:
     allImg.save(outFile, 'JPEG')
     return 0
 
+  def cleanupTmpImgFile(self):
+    for xTileNum in range(self.xTileNum0, self.xTileNum1 + 1):
+      for yTileNum in range(self.yTileNum0, self.yTileNum1 + 1):
+        tailURL = self.mkURL(xTileNum, yTileNum)
+        outImgFile = self.getimgFilePath(xTileNum, yTileNum)
+        if(os.path.exists(outImgFile)): os.remove(outImgFile)
+    return 0
+
 # for command run secction
 if (__name__ == '__main__'):
   import argparse
@@ -249,7 +259,7 @@ if (__name__ == '__main__'):
   ##################################
   ## Getting image & make image   ##
   ##################################
-  simg = sateliteImage.TsateliteImage( lat0, lng0, lat1, lng1)
+  simg = satelliteImage.TsatelliteImage( lat0, lng0, lat1, lng1)
   ret = simg.getImages()
   if (ret): 
     sys.stderr.write("Retreiving image from server was failure !!\n")
